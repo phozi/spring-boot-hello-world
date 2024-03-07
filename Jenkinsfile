@@ -17,20 +17,19 @@ pipeline {
         stage('Containerize with Docker') {
             steps {
                 // Build Docker image
-                sh 'docker build -t spring-boot-app .'
+                sh 'docker build -t spring-boot-docker:spring-docker .'
             }
         }
-        stage('Push to Registry') {
+        stage('Run Application') {
             steps {
                 // Push Docker image 
-                sh 'docker tag spring-boot-app phozisaq/spring-boot-app'
-                sh 'docker push phozisaq/spring-boot-app'
+                sh 'docker run -p 8080:8080 spring-boot-docker:spring-docker .'
             }
         }
         stage('Set Up Prometheus and Grafana') {
             steps {
                 // Run Prometheus in Docker container
-                sh 'docker run -d -p 9090:9090 -v /path/to/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus'
+                sh 'docker run -d --name prometheus -p 9090:9090 -v $(pwd)/prometheus.yml:/Users/phozisaqwemesha/spring-boot/spring-boot-hello-world/prometheus.yml prom/prometheus'
 
                 // Run Grafana in Docker container
                 sh 'docker run -d -p 3000:3000 grafana/grafana'
